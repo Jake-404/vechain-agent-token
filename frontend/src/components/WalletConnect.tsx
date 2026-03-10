@@ -1,9 +1,9 @@
-import { useWallet, useConnex } from "@vechain/dapp-kit-react";
+import { useWallet, useThor } from "@vechain/dapp-kit-react";
 import { useState, useEffect } from "react";
 
 function WalletConnect() {
   const { account, disconnect, setSource, connect } = useWallet();
-  const connex = useConnex();
+  const thor = useThor();
   const [balance, setBalance] = useState<string>("0");
 
   useEffect(() => {
@@ -14,8 +14,7 @@ function WalletConnect() {
 
     const fetchBalance = async () => {
       try {
-        const acc = connex.thor.account(account);
-        const detail = await acc.get();
+        const detail = await thor.accounts.getAccount(account);
         // VET balance is in wei (18 decimals)
         const vet = BigInt(detail.balance);
         const formatted = (Number(vet) / 1e18).toFixed(4);
@@ -26,7 +25,7 @@ function WalletConnect() {
     };
 
     fetchBalance();
-  }, [account, connex]);
+  }, [account, thor]);
 
   const handleConnect = async () => {
     try {

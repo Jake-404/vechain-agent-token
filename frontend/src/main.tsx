@@ -10,9 +10,9 @@ const nodeUrl = import.meta.env.VITE_NODE_URL || "https://testnet.vechain.org";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <DAppKitProvider
-      nodeUrl={nodeUrl}
-      genesis="test"
+      node={nodeUrl}
       usePersistence
+      v2Api={{ enabled: false }}
     >
       <App />
     </DAppKitProvider>

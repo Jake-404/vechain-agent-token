@@ -1,11 +1,10 @@
-import { useWallet, useConnex } from "@vechain/dapp-kit-react";
+import { useWallet } from "@vechain/dapp-kit-react";
 import WalletConnect from "./components/WalletConnect";
 import TokenInfo from "./components/TokenInfo";
 import TransferForm from "./components/TransferForm";
 
 function App() {
   const { account } = useWallet();
-  const connex = useConnex();
 
   return (
     <div className="app">

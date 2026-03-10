@@ -1,26 +1,53 @@
-import { useConnex } from "@vechain/dapp-kit-react";
+import { useThor } from "@vechain/dapp-kit-react";
 import { useState, useEffect, useCallback } from "react";
-import { TOKEN_ADDRESS, TOKEN_ABI } from "../config/vechain";
-import { Interface } from "ethers";
+import { TOKEN_ADDRESS } from "../config/vechain";
+
+// Minimal ABI fragments for reading token data
+const nameAbi = {
+  inputs: [],
+  name: "name",
+  outputs: [{ name: "", type: "string" }],
+  stateMutability: "view",
+  type: "function",
+} as const;
+
+const symbolAbi = {
+  inputs: [],
+  name: "symbol",
+  outputs: [{ name: "", type: "string" }],
+  stateMutability: "view",
+  type: "function",
+} as const;
+
+const totalSupplyAbi = {
+  inputs: [],
+  name: "totalSupply",
+  outputs: [{ name: "", type: "uint256" }],
+  stateMutability: "view",
+  type: "function",
+} as const;
+
+const balanceOfAbi = {
+  inputs: [{ name: "owner", type: "address" }],
+  name: "balanceOf",
+  outputs: [{ name: "", type: "uint256" }],
+  stateMutability: "view",
+  type: "function",
+} as const;
+
+const ERC20_ABI = [nameAbi, symbolAbi, totalSupplyAbi, balanceOfAbi];
 
 interface TokenInfoProps {
   account: string;
 }
 
 function TokenInfo({ account }: TokenInfoProps) {
-  const connex = useConnex();
+  const thor = useThor();
   const [tokenName, setTokenName] = useState<string>("");
   const [tokenSymbol, setTokenSymbol] = useState<string>("");
   const [totalSupply, setTotalSupply] = useState<string>("0");
   const [userBalance, setUserBalance] = useState<string>("0");
   const [loading, setLoading] = useState(true);
-
-  const iface = new Interface([
-    "function name() view returns (string)",
-    "function symbol() view returns (string)",
-    "function totalSupply() view returns (uint256)",
-    "function balanceOf(address) view returns (uint256)",
-  ]);
 
   const fetchTokenData = useCallback(async () => {
     if (TOKEN_ADDRESS === "0x0000000000000000000000000000000000000000") {
@@ -31,41 +58,29 @@ function TokenInfo({ account }: TokenInfoProps) {
     try {
       setLoading(true);
 
-      // Read token name
-      const nameResult = await connex.thor
-        .account(TOKEN_ADDRESS)
-        .method(iface.getFunction("name")!)
-        .call();
-      setTokenName(nameResult.decoded[0] as string);
+      const contract = thor.contracts.load(TOKEN_ADDRESS, ERC20_ABI);
 
-      // Read token symbol
-      const symbolResult = await connex.thor
-        .account(TOKEN_ADDRESS)
-        .method(iface.getFunction("symbol")!)
-        .call();
-      setTokenSymbol(symbolResult.decoded[0] as string);
+      const [name, symbol, supply, bal] = await Promise.all([
+        contract.read.name(),
+        contract.read.symbol(),
+        contract.read.totalSupply(),
+        contract.read.balanceOf(account),
+      ]);
 
-      // Read total supply
-      const supplyResult = await connex.thor
-        .account(TOKEN_ADDRESS)
-        .method(iface.getFunction("totalSupply")!)
-        .call();
-      const supply = BigInt(supplyResult.decoded[0] as string);
-      setTotalSupply((Number(supply) / 1e18).toLocaleString());
+      setTokenName(name[0] as string);
+      setTokenSymbol(symbol[0] as string);
 
-      // Read user balance
-      const balanceResult = await connex.thor
-        .account(TOKEN_ADDRESS)
-        .method(iface.getFunction("balanceOf")!)
-        .call(account);
-      const bal = BigInt(balanceResult.decoded[0] as string);
-      setUserBalance((Number(bal) / 1e18).toLocaleString());
+      const supplyBig = BigInt(String(supply[0]));
+      setTotalSupply((Number(supplyBig) / 1e18).toLocaleString());
+
+      const balBig = BigInt(String(bal[0]));
+      setUserBalance((Number(balBig) / 1e18).toLocaleString());
     } catch (err) {
       console.error("Failed to fetch token data:", err);
     } finally {
       setLoading(false);
     }
-  }, [account, connex]);
+  }, [account, thor]);
 
   useEffect(() => {
     fetchTokenData();

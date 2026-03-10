@@ -1,4 +1,4 @@
-import { useConnex, useWallet } from "@vechain/dapp-kit-react";
+import { useWallet } from "@vechain/dapp-kit-react";
 import { useState } from "react";
 import { TOKEN_ADDRESS } from "../config/vechain";
 import { Interface, parseEther } from "ethers";
@@ -8,8 +8,7 @@ interface TransferFormProps {
 }
 
 function TransferForm({ account }: TransferFormProps) {
-  const connex = useConnex();
-  const { vendor } = useWallet();
+  const { requestTransaction } = useWallet();
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
@@ -43,10 +42,9 @@ function TransferForm({ account }: TransferFormProps) {
       };
 
       // Sign and send via wallet
-      const result = await vendor
-        .sign("tx", [clause])
-        .comment(`Transfer ${amount} VA to ${recipient}`)
-        .request();
+      const result = await requestTransaction([clause], {
+        comment: `Transfer ${amount} VA to ${recipient}`,
+      });
 
       setTxId(result.txid);
       setStatus("success");
