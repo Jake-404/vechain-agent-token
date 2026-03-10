@@ -8,12 +8,12 @@ const W = 400;
 const H = 600;
 const BIRD_R = 14;
 const BIRD_X = 80;
-const GRAVITY = 0.45;
-const FLAP_VEL = -7.5;
+const GRAVITY = 0.3;
+const FLAP_VEL = -6;
 const PIPE_W = 52;
-const PIPE_GAP = 155;
-const PIPE_SPEED = 2.5;
-const PIPE_INTERVAL = 60; // frames between pipes
+const PIPE_GAP = 200;
+const PIPE_SPEED = 2;
+const PIPE_INTERVAL = 100; // frames between pipes
 
 // --- ABI for contract reads ---
 const REWARDS_ABI = [
