@@ -2,6 +2,7 @@ import { useWallet } from "@vechain/dapp-kit-react";
 import WalletConnect from "./components/WalletConnect";
 import TokenInfo from "./components/TokenInfo";
 import TransferForm from "./components/TransferForm";
+import FlappyGame from "./components/FlappyGame";
 
 function App() {
   const { account } = useWallet();
@@ -10,11 +11,13 @@ function App() {
     <div className="app">
       <header className="header">
         <h1>VeChainAgent (VA)</h1>
-        <p className="subtitle">VIP-180 Token on VeChainThor</p>
+        <p className="subtitle">Play Flappy Agent &middot; Earn VA Tokens</p>
       </header>
 
       <main className="main">
         <WalletConnect />
+
+        <FlappyGame account={account} />
 
         {account && (
           <>

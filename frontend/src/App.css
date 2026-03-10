@@ -274,6 +274,53 @@ body {
   font-size: 0.85rem;
 }
 
+/* Flappy Bird Game */
+.game-card h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.game-pool-info {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.game-canvas {
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  aspect-ratio: 400 / 600;
+}
+
+.game-canvas:focus {
+  outline: 2px solid var(--primary);
+}
+
+.game-hint {
+  text-align: center;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.game-over {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.game-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--warning);
+  margin-bottom: 0.75rem;
+}
+
 /* Footer */
 .footer {
   text-align: center;

@@ -39,3 +39,12 @@ export const NETWORKS = {
 } as const;
 
 export type NetworkId = keyof typeof NETWORKS;
+
+// --- GameRewards contract ---
+export const GAME_REWARDS_ADDRESS =
+  import.meta.env.VITE_GAME_REWARDS_ADDRESS ||
+  "0x0000000000000000000000000000000000000000";
+
+// Private key used to sign game scores client-side.
+// In production, this would live on a backend server.
+export const GAME_SIGNER_KEY = import.meta.env.VITE_GAME_SIGNER_KEY || "";
